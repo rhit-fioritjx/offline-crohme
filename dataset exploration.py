@@ -39,7 +39,7 @@ if __name__ == "__main__":
     writeLog("There are " + str(numberOfFile) + " files in " + dataMergedPath)
     cnt = 0
 
-    for fileInkml in listFiles[:10]:
+    for fileInkml in listFiles:
         cnt = cnt + 1
         fileName = fileInkml.split('\\')[-1]
         print("Processing %s [%d/%d]" % (fileName, cnt, numberOfFile))

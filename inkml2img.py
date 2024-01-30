@@ -86,6 +86,7 @@ def inkml2img(input_path, output_path):
             ax.plot(x,y,linewidth=2,c='black')
     fig.set_frameon(False)
     fig.savefig(output_path, bbox_inches='tight', dpi=100, transparent=False)
+    plt.close()
     
 def extract_symbols(input_path,output_dir,name):
     # output_path = output_path.split('.')[0]
@@ -108,3 +109,4 @@ def extract_symbols(input_path,output_dir,name):
         ax.invert_yaxis()
         ax.set_aspect('equal', adjustable='box')
         ax.set_axis_off()    
+    plt.close()
