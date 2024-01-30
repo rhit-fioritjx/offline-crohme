@@ -19,7 +19,7 @@ def createDirectory(dirPath):
         writeLog("Create " + dirPath)
 
 if __name__ == "__main__":
-    pattern = re.compile(r"(\(|\$|[0-9]|(\\cdot)|(\\div)|(\\sin)|(\\cos)|(\\tan)|(\\times)|(\\(t|T)heta)|(\\(p|P)i)|(\\(d|D)elta)|=|\+|\-|\*|\/| |\)|[a-z]|[A-Z]|\.)*")
+    # pattern = re.compile(r"(\(|\$|[0-9]|(\\cdot)|(\\div)|(\\sin)|(\\cos)|(\\tan)|(\\times)|(\\(t|T)heta)|(\\(p|P)i)|(\\(d|D)elta)|=|\+|\-|\*|\/| |\)|[a-z]|[A-Z]|\.)*")
     # writeLog("Start processing.")
     # filesPath = glob.glob(dataPath + '*/*.inkml')
     # writeLog("There are " + str(len(filesPath)) + " files in " + dataPath)
@@ -39,18 +39,19 @@ if __name__ == "__main__":
     writeLog("There are " + str(numberOfFile) + " files in " + dataMergedPath)
     cnt = 0
 
-    for fileInkml in listFiles:
+    for fileInkml in listFiles[:10]:
         cnt = cnt + 1
         fileName = fileInkml.split('\\')[-1]
         print("Processing %s [%d/%d]" % (fileName, cnt, numberOfFile))
         writeLog("[" + str(cnt) + "/" + str(numberOfFile) + "]" + "Processed " + fileInkml + " --> " + targetFolder + fileName + ".png")
         try:
-            latex = inkml2img.get_label(fileInkml)
-            if re.fullmatch(pattern=pattern,string=latex) is not None:
-                print("accepted:", latex)
-                inkml2img.inkml2img(fileInkml, targetFolder + fileName + '.png')
-            else:
-                print("rejected:", latex)
+            inkml2img.extract_symbols(fileInkml,targetFolder,fileName+'.jpg')
+            # latex = inkml2img.get_label(fileInkml)
+            # if re.fullmatch(pattern=pattern,string=latex) is not None:
+            #     print("accepted:", latex)
+            #     inkml2img.inkml2img(fileInkml, targetFolder + fileName + '.png')
+            # else:
+            #     print("rejected:", latex)
         except:
             writeLog("Failed!")
             print("An error occured!")

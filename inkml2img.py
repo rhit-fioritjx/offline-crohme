@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import xml.etree.ElementTree as ET
 from io import StringIO
+from pathlib import Path
 
 def get_label(inkml_file_abs_path):
     lebel = ""
@@ -45,6 +46,7 @@ def get_traces_data(inkml_file_abs_path):
             for traceGroup in traceGroupWrapper.findall(doc_namespace + 'traceGroup'):
 
                 label = traceGroup.find(doc_namespace + 'annotation').text
+                id = traceGroup.get('{http://www.w3.org/XML/1998/namespace}id')     
 
                 'traces of the current traceGroup'
                 traces_curr = []
@@ -58,7 +60,7 @@ def get_traces_data(inkml_file_abs_path):
                     traces_curr.append(single_trace)
 
 
-                traces_data.append({'label': label, 'trace_group': traces_curr})
+                traces_data.append({'label': label, 'trace_group': traces_curr, 'id':id})
 
         else:
             'Consider Validation data that has no labels'
@@ -72,22 +74,37 @@ def inkml2img(input_path, output_path):
     fout.close()
 
     traces = get_traces_data(input_path)
-    plt.gca().invert_yaxis()
-    plt.gca().set_aspect('equal', adjustable='box')
-    plt.axes().get_xaxis().set_visible(False)
-    plt.axes().get_yaxis().set_visible(False)
-    plt.axes().spines['top'].set_visible(False)
-    plt.axes().spines['right'].set_visible(False)
-    plt.axes().spines['bottom'].set_visible(False)
-    plt.axes().spines['left'].set_visible(False)
+    fig, ax = plt.subplots()
+    ax.invert_yaxis()
+    ax.set_aspect('equal', adjustable='box')
+    ax.set_axis_off()
     for elem in traces:
         ls = elem['trace_group']
         for subls in ls:
             data = np.array(subls)
             x,y=zip(*data)
-            plt.plot(x,y,linewidth=2,c='black')
-    plt.savefig(output_path, bbox_inches='tight', dpi=100)
-    plt.gcf().clear()
+            ax.plot(x,y,linewidth=2,c='black')
+    fig.set_frameon(False)
+    fig.savefig(output_path, bbox_inches='tight', dpi=100, transparent=False)
     
+def extract_symbols(input_path,output_dir,name):
+    # output_path = output_path.split('.')[0]
     
-    
+    traces = get_traces_data(input_path)
+    fig, ax = plt.subplots()
+    ax.invert_yaxis()
+    ax.set_aspect('equal', adjustable='box')
+    ax.set_axis_off()    
+    for elem in traces:
+        ls = elem['trace_group']
+        for subls in ls:
+            data = np.array(subls)
+            x,y=zip(*data)
+            ax.plot(x,y,linewidth=4,c='black')
+        fig.set_frameon(False)
+        Path(output_dir+elem['label']+'/').mkdir(parents=True, exist_ok=True)
+        fig.savefig(output_dir+elem['label']+'/'+elem['id']+name, bbox_inches='tight', dpi=100, transparent=False)   
+        ax.clear()
+        ax.invert_yaxis()
+        ax.set_aspect('equal', adjustable='box')
+        ax.set_axis_off()    
