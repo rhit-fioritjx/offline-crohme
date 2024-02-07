@@ -103,6 +103,10 @@ def extract_symbols(input_path,output_dir,name):
             x,y=zip(*data)
             ax.plot(x,y,linewidth=4,c='black')
         fig.set_frameon(False)
+        if elem['label'] == '/':
+            elem['label'] = 'slash'
+        if elem['label'] == '.':
+            elem['label'] = 'dec'
         Path(output_dir+elem['label']+'/').mkdir(parents=True, exist_ok=True)
         fig.savefig(output_dir+elem['label']+'/'+elem['id']+name, bbox_inches='tight', dpi=100, transparent=False)   
         ax.clear()
