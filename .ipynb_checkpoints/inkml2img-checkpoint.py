@@ -1,16 +1,16 @@
 import pickle as p
-# import cv2, json, scipy.misc, math
+import cv2, json, scipy.misc, math
 import numpy as np
-# from skimage.draw import line
-# from skimage.morphology import thin
+from skimage.draw import line
+from skimage.morphology import thin
 import matplotlib.pyplot as plt
 from PIL import Image
 import xml.etree.ElementTree as ET
-# from io import StringIO
+from io import StringIO
 from pathlib import Path
 
 def get_label(inkml_file_abs_path):
-    # lebel = ""
+    lebel = ""
     tree = ET.parse(inkml_file_abs_path)
     root = tree.getroot()
     doc_namespace = "{http://www.w3.org/2003/InkML}"
